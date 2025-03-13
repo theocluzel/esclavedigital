@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informations - ESCLAVE DIGITAL</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen flex flex-col bg-[#001428] text-white">
+    <header class="py-4 border-b border-white/10">
+        <nav class="container mx-auto px-4">
+            <a href="/" class="text-xl font-bold">ESCLAVE DIGITAL</a>
+        </nav>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-16">
+        <div class="max-w-2xl mx-auto">
+            <!-- Étapes -->
+            <div class="flex justify-between mb-12">
+                <div class="flex flex-col items-center">
+                    <div class="w-8 h-8 rounded-full bg-cyan-400 text-[#001428] flex items-center justify-center font-bold">✓</div>
+                    <span class="mt-2 text-sm">Format</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="w-8 h-8 rounded-full bg-cyan-400 text-[#001428] flex items-center justify-center font-bold">2</div>
+                    <span class="mt-2 text-sm">Informations</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="w-8 h-8 rounded-full bg-white/20 text-white flex items-center justify-center font-bold">3</div>
+                    <span class="mt-2 text-sm">Paiement</span>
+                </div>
+            </div>
+
+            <!-- Formulaire -->
+            <div class="bg-white/5 p-8 rounded-xl">
+                <h1 class="text-2xl font-bold mb-8">Vos informations</h1>
+
+                <!-- Résumé de la commande -->
+                <div class="mb-8 p-4 rounded-lg border border-white/10">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h2 class="font-bold">ESCLAVE DIGITAL</h2>
+                            <p class="text-sm text-white/70">Format : <span id="selectedFormat">...</span></p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold">4,99€</p>
+                            <p class="text-sm text-white/70">TTC</p>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="information-form" class="space-y-6">
+                    <div>
+                        <label for="email" class="block mb-2">Email</label>
+                        <input type="email" id="email" required 
+                            class="w-full px-4 py-2 rounded bg-white/10 border border-white/20 focus:border-cyan-400 focus:outline-none text-white"
+                            placeholder="votre@email.com">
+                    </div>
+                    <div>
+                        <label for="firstname" class="block mb-2">Prénom</label>
+                        <input type="text" id="firstname" required 
+                            class="w-full px-4 py-2 rounded bg-white/10 border border-white/20 focus:border-cyan-400 focus:outline-none text-white"
+                            placeholder="Votre prénom">
+                    </div>
+                    <div>
+                        <label for="lastname" class="block mb-2">Nom</label>
+                        <input type="text" id="lastname" required 
+                            class="w-full px-4 py-2 rounded bg-white/10 border border-white/20 focus:border-cyan-400 focus:outline-none text-white"
+                            placeholder="Votre nom">
+                    </div>
+
+                    <button type="submit" 
+                        class="w-full mt-8 bg-gradient-to-r from-cyan-400 to-blue-400 text-white font-bold py-3 px-8 rounded-full hover:opacity-90 transition-all">
+                        Continuer vers le paiement
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer class="py-8 border-t border-white/10 bg-[#001428]/50">
+        <div class="container mx-auto px-4 text-center text-sm text-white/60">
+            © 2024 ESCLAVE DIGITAL. Tous droits réservés.
+        </div>
+    </footer>
+
+    <script>
+        // Récupérer le format depuis l'URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const format = urlParams.get('format');
+        document.getElementById('selectedFormat').textContent = format === 'web' ? 'Version Web Premium' : 
+                                                              format === 'ios' ? 'iOS / Apple Books' : 
+                                                              format === 'android' ? 'Android' : '';
+
+        // Gérer la soumission du formulaire
+        const form = document.getElementById('information-form');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const firstname = document.getElementById('firstname').value;
+            const lastname = document.getElementById('lastname').value;
+
+            // Rediriger vers la page de paiement avec toutes les informations
+            window.location.href = `/payment.html?format=${format}&email=${encodeURIComponent(email)}&firstname=${encodeURIComponent(firstname)}&lastname=${encodeURIComponent(lastname)}`;
+        });
+    </script>
+</body>
+</html> 

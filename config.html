@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration - ESCLAVE DIGITAL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-md mx-auto">
+            <h1 class="text-2xl font-bold mb-6">Configuration Stripe</h1>
+            
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                <form id="configForm" class="space-y-4">
+                    <div>
+                        <label for="siteUrl" class="block text-sm font-medium mb-2">URL du site</label>
+                        <input type="url" id="siteUrl" name="siteUrl" required
+                            placeholder="https://votre-site.com"
+                            class="w-full px-4 py-2 rounded bg-gray-700 border border-gray-600 focus:border-cyan-400 focus:outline-none">
+                    </div>
+                    
+                    <div class="pt-4">
+                        <button type="submit"
+                            class="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded transition-colors">
+                            Sauvegarder
+                        </button>
+                    </div>
+                </form>
+
+                <div class="mt-6">
+                    <h2 class="text-lg font-semibold mb-2">URLs pour Stripe</h2>
+                    <div id="stripeUrls" class="space-y-4 text-sm">
+                        <div>
+                            <p class="font-medium text-gray-300">URL de succès :</p>
+                            <p id="successUrl" class="bg-gray-700 p-2 rounded mt-1 break-all"></p>
+                        </div>
+                        <div>
+                            <p class="font-medium text-gray-300">URL d'annulation :</p>
+                            <p id="cancelUrl" class="bg-gray-700 p-2 rounded mt-1 break-all"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('configForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const baseUrl = document.getElementById('siteUrl').value.trim();
+            
+            // Mettre à jour les URLs affichées
+            document.getElementById('successUrl').textContent = `${baseUrl}/success.html?format={FORMAT}&session_id={CHECKOUT_SESSION_ID}`;
+            document.getElementById('cancelUrl').textContent = `${baseUrl}/payment.html?format={FORMAT}`;
+
+            // Sauvegarder dans le localStorage
+            localStorage.setItem('siteUrl', baseUrl);
+        });
+
+        // Charger l'URL sauvegardée si elle existe
+        window.addEventListener('DOMContentLoaded', function() {
+            const savedUrl = localStorage.getItem('siteUrl');
+            if (savedUrl) {
+                document.getElementById('siteUrl').value = savedUrl;
+                document.getElementById('successUrl').textContent = `${savedUrl}/success.html?format={FORMAT}&session_id={CHECKOUT_SESSION_ID}`;
+                document.getElementById('cancelUrl').textContent = `${savedUrl}/payment.html?format={FORMAT}`;
+            }
+        });
+    </script>
+</body>
+</html> 

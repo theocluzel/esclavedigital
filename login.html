@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - ESCLAVE DIGITAL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <header class="bg-gray-800 shadow-lg">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="text-xl font-bold">
+                    <a href="/" class="text-white hover:text-cyan-400 transition-colors">ESCLAVE DIGITAL</a>
+                </div>
+                <div class="space-x-4">
+                    <a href="/" class="hover:text-cyan-400 transition-colors">Accueil</a>
+                    <a href="/about.html" class="hover:text-cyan-400 transition-colors">À propos</a>
+                    <a href="mailto:contact@esclavedigital.fr" class="hover:text-cyan-400 transition-colors">Contact</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-8">
+        <div class="max-w-md mx-auto">
+            <div class="bg-gray-800 p-8 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold mb-6 text-center">Connexion</h2>
+                <form id="login-form" class="space-y-6">
+                    <div>
+                        <label for="email" class="block text-sm font-medium mb-2">Email</label>
+                        <input type="email" id="email" name="email" required
+                            class="w-full px-4 py-2 rounded bg-gray-700 border border-gray-600 focus:border-cyan-400 focus:outline-none">
+                    </div>
+                    <div>
+                        <label for="password" class="block text-sm font-medium mb-2">Mot de passe</label>
+                        <input type="password" id="password" name="password" required
+                            class="w-full px-4 py-2 rounded bg-gray-700 border border-gray-600 focus:border-cyan-400 focus:outline-none">
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="remember" name="remember"
+                                class="h-4 w-4 rounded border-gray-600 text-cyan-600 focus:ring-cyan-500">
+                            <label for="remember" class="ml-2 block text-sm">Se souvenir de moi</label>
+                        </div>
+                        <div class="text-sm">
+                            <a href="#" class="text-cyan-400 hover:text-cyan-300">Mot de passe oublié ?</a>
+                        </div>
+                    </div>
+                    <div>
+                        <button type="submit"
+                            class="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded transition-colors">
+                            Se connecter
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-gray-800 mt-12">
+        <div class="container mx-auto px-6 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Liens rapides</h4>
+                    <ul class="space-y-2">
+                        <li><a href="/mentions-legales.html" class="hover:text-cyan-400 transition-colors">Mentions légales</a></li>
+                        <li><a href="/politique-confidentialite.html" class="hover:text-cyan-400 transition-colors">Politique de confidentialité</a></li>
+                        <li><a href="/cgv.html" class="hover:text-cyan-400 transition-colors">CGV</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Contact</h4>
+                    <p>Email : <a href="mailto:contact@esclavedigital.fr" class="hover:text-cyan-400 transition-colors">contact@esclavedigital.fr</a></p>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+                <p>© 2024 ESCLAVE DIGITAL. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('login-form');
+            
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+
+                try {
+                    const response = await fetch('/api/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            email,
+                            password
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        window.location.href = '/reader.html';
+                    } else {
+                        alert(data.message || 'Erreur de connexion');
+                    }
+                } catch (error) {
+                    console.error('Erreur lors de la connexion:', error);
+                    alert('Une erreur est survenue lors de la connexion');
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

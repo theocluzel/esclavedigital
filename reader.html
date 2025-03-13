@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture - ESCLAVE DIGITAL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .chapter-content {
+            font-size: 1.125rem;
+            line-height: 1.75;
+        }
+        
+        .chapter-content p {
+            margin-bottom: 1.5rem;
+        }
+
+        .chapter-content h2 {
+            font-size: 1.875rem;
+            font-weight: bold;
+            margin: 2rem 0 1rem;
+        }
+
+        .chapter-content h3 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 1.5rem 0 1rem;
+        }
+
+        /* Style pour la barre de progression */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(to right, #22d3ee, #3b82f6);
+            width: 0%;
+            transition: width 0.2s ease;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#001428] text-white">
+    <!-- Barre de progression -->
+    <div class="progress-bar">
+        <div class="progress" id="readingProgress"></div>
+    </div>
+
+    <header class="py-4 border-b border-white/10 bg-[#001428]/95 backdrop-blur-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-4 flex justify-between items-center">
+            <a href="/" class="text-xl font-bold">ESCLAVE DIGITAL</a>
+            <div class="flex items-center space-x-6">
+                <button id="toggleSidebar" class="hover:text-cyan-400 transition-colors">
+                    Chapitres
+                </button>
+                <button id="logout" class="hover:text-cyan-400 transition-colors">
+                    Déconnexion
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="flex-grow flex">
+        <!-- Sidebar pour la navigation entre chapitres -->
+        <aside id="sidebar" class="w-64 border-r border-white/10 bg-[#001428]/95 backdrop-blur-sm fixed top-0 bottom-0 left-0 transform -translate-x-full transition-transform duration-200 ease-in-out pt-20 overflow-y-auto">
+            <div class="p-4">
+                <h2 class="text-lg font-bold mb-4">Table des matières</h2>
+                <ul class="space-y-2" id="chaptersMenu">
+                    <!-- La liste des chapitres sera ajoutée ici par JavaScript -->
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Contenu principal -->
+        <main class="flex-grow container mx-auto px-4 py-16 max-w-3xl">
+            <div id="bookContent" class="chapter-content">
+                <!-- Le contenu du chapitre sera chargé ici -->
+            </div>
+
+            <!-- Navigation entre chapitres -->
+            <div class="mt-16 flex justify-between items-center border-t border-white/10 pt-8">
+                <button id="prevChapter" class="px-6 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors">
+                    Chapitre précédent
+                </button>
+                <button id="nextChapter" class="px-6 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors">
+                    Chapitre suivant
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Vérification de l'authentification
+        async function checkAuth() {
+            try {
+                const response = await fetch('/api/check-auth');
+                if (!response.ok) {
+                    window.location.href = 'login.html';
+                }
+            } catch (error) {
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Gestion de la déconnexion
+        document.getElementById('logout').addEventListener('click', async () => {
+            try {
+                await fetch('/api/logout', { method: 'POST' });
+                window.location.href = 'login.html';
+            } catch (error) {
+                console.error('Erreur lors de la déconnexion:', error);
+            }
+        });
+
+        // Gestion de la sidebar
+        const sidebar = document.getElementById('sidebar');
+        document.getElementById('toggleSidebar').addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+        });
+
+        // Gestion de la barre de progression
+        function updateReadingProgress() {
+            const winScroll = document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('readingProgress').style.width = scrolled + '%';
+        }
+
+        window.addEventListener('scroll', updateReadingProgress);
+
+        // Charger le contenu initial
+        checkAuth();
+
+        // Exemple de structure des chapitres (à remplacer par les vrais chapitres)
+        const chapters = [
+            { id: 1, title: "Introduction" },
+            { id: 2, title: "L'emprise du numérique" },
+            { id: 3, title: "Les dangers cachés" },
+            // ... autres chapitres
+        ];
+
+        // Remplir le menu des chapitres
+        const chaptersMenu = document.getElementById('chaptersMenu');
+        chapters.forEach(chapter => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <button class="w-full text-left px-4 py-2 rounded hover:bg-white/10 transition-colors">
+                    ${chapter.title}
+                </button>
+            `;
+            li.querySelector('button').addEventListener('click', () => loadChapter(chapter.id));
+            chaptersMenu.appendChild(li);
+        });
+
+        // Fonction pour charger un chapitre
+        async function loadChapter(chapterId) {
+            try {
+                const response = await fetch(`/api/chapters/${chapterId}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('bookContent').innerHTML = data.content;
+                    sidebar.classList.add('-translate-x-full'); // Fermer la sidebar après sélection
+                    window.scrollTo(0, 0); // Remonter en haut de la page
+                }
+            } catch (error) {
+                console.error('Erreur lors du chargement du chapitre:', error);
+            }
+        }
+
+        // Navigation entre chapitres
+        document.getElementById('prevChapter').addEventListener('click', () => {
+            // Implémenter la navigation vers le chapitre précédent
+        });
+
+        document.getElementById('nextChapter').addEventListener('click', () => {
+            // Implémenter la navigation vers le chapitre suivant
+        });
+    </script>
+</body>
+</html> 
