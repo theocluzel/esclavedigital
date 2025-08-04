@@ -35,8 +35,8 @@
         }
         .glowing-letter.active {
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.8),
-                          0 0 20px rgba(255, 255, 255, 0.8),
-                          0 0 30px rgba(255, 255, 255, 0.6);
+                         0 0 20px rgba(255, 255, 255, 0.8),
+                         0 0 30px rgba(255, 255, 255, 0.6);
         }
         dialog {
             margin: auto;
@@ -54,10 +54,8 @@
     <!-- Header -->
     <header class="py-4 border-b border-white/10">
         <nav class="container mx-auto px-4 flex justify-between items-center">
-            <div class="text-xl font-bold">
-                <a href="/" class="text-white hover:text-cyan-400 transition-colors">ESCLAVE DIGITAL</a>
-            </div>
-            <div class="flex items-center space-x-6">
+            <div class="text-xl font-bold">ESCLAVE DIGITAL</div>
+            <div class="space-x-6">
                 <a href="/" class="hover:text-cyan-400 transition-colors">Accueil</a>
                 <a href="/about.html" class="hover:text-cyan-400 transition-colors">À propos</a>
                 <a href="mailto:contact@esclavedigital.fr" class="hover:text-cyan-400 transition-colors">Contact</a>
@@ -76,15 +74,29 @@
                 <!-- Container pour le livre 3D -->
                 <div id="book-container" class="mb-4"></div>
 
-                <!-- Bouton pour accéder au livre -->
-                <div class="text-center mt-8">
-                    <button id="access-book" class="bg-gradient-to-r from-cyan-400 to-blue-400 text-white font-bold py-4 px-8 rounded-full hover:opacity-90 transition-all text-lg">
-                        Accéder au livre
-                    </button>
-                </div>
-
-                <!-- Description du livre -->
+                <!-- Prix et boutons -->
                 <div class="space-y-6">
+                    <div class="flex items-center justify-center gap-3">
+                        <span class="text-3xl font-bold text-white">4,99€</span>
+                        <span class="text-sm text-white/70">TTC</span>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <button onclick="document.getElementById('format-selection').showModal()" class="bg-gradient-to-r from-cyan-400 to-blue-400 text-white font-bold py-3 px-8 rounded-full hover:opacity-90 transition-all">
+                            Acheter le livre
+                        </button>
+                        <button onclick="document.getElementById('formats-lecture').scrollIntoView({behavior: 'smooth'})" class="bg-transparent border-2 border-white text-white hover:bg-white/10 font-bold py-3 px-8 rounded-full transition-all">
+                            Comment lire ?
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section En Savoir Plus -->
+        <div id="en-savoir-plus" class="bg-white/5 backdrop-blur-sm mt-16 py-20">
+            <div class="container mx-auto px-4">
+                <div class="max-w-4xl mx-auto space-y-12">
                     <div class="text-center space-y-4">
                         <h2 class="text-4xl font-bold">ESCLAVE DIGITAL</h2>
                         <h3 class="text-2xl font-semibold text-white/90">VERS UN FUTUR SANS INTELLIGENCE ?</h3>
@@ -107,7 +119,7 @@
                         </p>
                         
                         <blockquote class="border-l-4 border-white/20 pl-6 italic text-white/90">
-                            «J'espère que chaque lecteur trouvera des moyens concrets pour proteger son intelligence et son bien-être dans un monde de plus en plus digital. Ensemble, nous pouvons construire un avenir où la technologie est utilisée de manière responsable et bénéfique, sans sacrifier notre santé mentale et physique.»
+                            «J'espère que chaque lecteur trouvera des moyens concrets pour proteger son intelligence el son bien-être dans un monde de plus en plus digital. Ensemble, nous pouvons construire un avenir où la technologie est utilisée de manière responsable et bénéfique, sans sacrifier notre santé mentale et physique.»
                         </blockquote>
                         
                         <p class="text-right font-semibold">
@@ -117,35 +129,187 @@
                 </div>
             </div>
         </div>
-    </main>
 
-    <!-- Modal de sélection de plateforme -->
-    <dialog id="platform-selection" class="bg-[#001428] text-white p-8 rounded-xl backdrop-blur-xl border border-white/20 w-full max-w-2xl mx-auto">
-        <div class="space-y-6">
-            <h2 class="text-2xl font-bold text-center">Sélectionnez le type de votre appareil pour accéder au livre</h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Android -->
-                <button disabled
-                    class="bg-gradient-to-r from-gray-500 to-gray-600 text-white font-bold py-6 px-8 rounded-full opacity-50 cursor-not-allowed text-lg">
-                    Android
-                </button>
+        <!-- Section Formats de Lecture -->
+        <div id="formats-lecture" class="mt-16 py-20 bg-white/5">
+            <div class="container mx-auto px-4">
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-3xl font-bold text-center mb-12">Comment lire ESCLAVE DIGITAL ?</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <!-- Version Web Premium -->
+                        <div class="bg-gradient-to-r from-cyan-500/20 to-blue-500/20 p-6 rounded-lg">
+                            <h3 class="text-xl font-bold mb-4">Version Web Premium</h3>
+                            <p class="text-white/80">La meilleure expérience de lecture, sur tous vos appareils.</p>
+                            <ul class="mt-4 space-y-2 text-sm">
+                                <li>• Aucune installation requise</li>
+                                <li>• Synchronisation automatique</li>
+                                <li>• Lecture hors-ligne possible</li>
+                                <li>• Compte personnel sécurisé</li>
+                            </ul>
+                        </div>
 
-                <!-- iOS -->
-                <button onclick="window.open('https://books.apple.com/fr/book/esclave-digitale/id6742460796', '_blank')" 
-                    class="bg-gradient-to-r from-cyan-400 to-blue-400 text-white font-bold py-6 px-8 rounded-full hover:opacity-90 transition-all text-lg">
-                    iOS
-                </button>
-            </div>
+                        <!-- iOS -->
+                        <div class="bg-white/10 p-6 rounded-lg">
+                            <h3 class="text-xl font-bold mb-4">iOS / Apple Books</h3>
+                            <p class="text-white/80">Optimisé pour iPhone et iPad.</p>
+                            <ul class="mt-4 space-y-2 text-sm">
+                                <li>• Installation simple et rapide</li>
+                                <li>• Synchronisation iCloud</li>
+                                <li>• Marque-pages et annotations</li>
+                                <li>• Compatible tous appareils Apple</li>
+                            </ul>
+                        </div>
 
-            <div class="flex justify-center pt-4">
-                <button onclick="document.getElementById('platform-selection').close()" 
-                    class="text-white/70 hover:text-white px-6 py-2 rounded-full transition-all">
-                    Annuler
-                </button>
+                        <!-- Android -->
+                        <div class="bg-white/10 p-6 rounded-lg">
+                            <h3 class="text-xl font-bold mb-4">Android</h3>
+                            <p class="text-white/80">Via Google Play Livres.</p>
+                            <ul class="mt-4 space-y-2 text-sm">
+                                <li>• Installation automatique</li>
+                                <li>• Synchronisation Google</li>
+                                <li>• Mode sombre disponible</li>
+                                <li>• Compatible tous appareils Android</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="mt-12 p-6 bg-white/10 rounded-lg">
+                        <h3 class="text-xl font-bold mb-4">Comment acheter ?</h3>
+                        <ol class="space-y-4 text-white/80">
+                            <li>1. Cliquez sur "Acheter le livre"</li>
+                            <li>2. Choisissez votre format de lecture préféré</li>
+                            <li>3. Remplissez vos informations (email, nom)</li>
+                            <li>4. Procédez au paiement sécurisé par carte bancaire</li>
+                            <li>5. Selon votre choix :
+                                <ul class="ml-6 mt-2 space-y-2">
+                                    <li>• <span class="font-semibold">Version Web</span> : Créez votre compte et accédez immédiatement au livre</li>
+                                    <li>• <span class="font-semibold">iOS</span> : Ouvrez le lien reçu par email dans Apple Books</li>
+                                    <li>• <span class="font-semibold">Android</span> : Installez Google Play Livres et ouvrez le lien reçu</li>
+                                </ul>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
             </div>
         </div>
-    </dialog>
+
+        <!-- Modal de sélection du format -->
+        <dialog id="format-selection" class="bg-[#001428] text-white p-8 rounded-xl backdrop-blur-xl border border-white/20 w-full max-w-2xl mx-auto">
+            <div class="space-y-6">
+                <h2 class="text-2xl font-bold text-center">Choisissez votre format de lecture</h2>
+                
+                <form id="format-form" class="space-y-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- iOS -->
+                        <div class="bg-white/10 p-6 rounded-lg cursor-pointer hover:bg-white/20 transition-all">
+                            <input type="radio" name="format" id="ios" value="ios" class="hidden">
+                            <label for="ios" class="block cursor-pointer">
+                                <h3 class="text-xl font-bold mb-3">iOS / Apple Books</h3>
+                                <p class="text-sm text-white/80 mb-4">Format optimisé pour iPhone et iPad</p>
+                                <div class="space-y-4">
+                                    <div class="bg-white/5 p-3 rounded">
+                                        <h4 class="font-bold mb-2">Comment lire ?</h4>
+                                        <ol class="text-sm space-y-2 text-white/70">
+                                            <li>1. Installez Apple Books (gratuit)</li>
+                                            <li>2. Après l'achat, cliquez sur "Ouvrir dans Books"</li>
+                                            <li>3. Le livre sera synchronisé sur tous vos appareils Apple</li>
+                                        </ol>
+                                    </div>
+                                    <ul class="text-sm space-y-1 text-white/70">
+                                        <li>• Synchronisation iCloud automatique</li>
+                                        <li>• Marque-pages et annotations sauvegardés</li>
+                                        <li>• Reprise de la lecture sur tous vos appareils</li>
+                                    </ul>
+                                </div>
+                            </label>
+                        </div>
+
+                        <!-- Android -->
+                        <div class="bg-white/10 p-6 rounded-lg cursor-pointer hover:bg-white/20 transition-all">
+                            <input type="radio" name="format" id="android" value="android" class="hidden">
+                            <label for="android" class="block cursor-pointer">
+                                <h3 class="text-xl font-bold mb-3">Android</h3>
+                                <p class="text-sm text-white/80 mb-4">Via Google Play Livres</p>
+                                <div class="space-y-4">
+                                    <div class="bg-white/5 p-3 rounded">
+                                        <h4 class="font-bold mb-2">Comment lire ?</h4>
+                                        <ol class="text-sm space-y-2 text-white/70">
+                                            <li>1. Installez Google Play Livres (gratuit)</li>
+                                            <li>2. Après l'achat, le livre s'ouvrira automatiquement</li>
+                                            <li>3. Accessible sur tous vos appareils Android</li>
+                                        </ol>
+                                    </div>
+                                    <ul class="text-sm space-y-1 text-white/70">
+                                        <li>• Synchronisation Google automatique</li>
+                                        <li>• Mode sombre et personnalisation</li>
+                                        <li>• Lecture hors-ligne après téléchargement</li>
+                                    </ul>
+                                </div>
+                            </label>
+                        </div>
+
+                        <!-- Version Web -->
+                        <div class="md:col-span-2 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 p-6 rounded-lg cursor-pointer hover:from-cyan-500/30 hover:to-blue-500/30 transition-all">
+                            <input type="radio" name="format" id="web" value="web" class="hidden">
+                            <label for="web" class="block cursor-pointer">
+                                <div class="flex items-start gap-4">
+                                    <div class="flex-grow">
+                                        <h3 class="text-xl font-bold mb-3">Version Web Premium</h3>
+                                        <p class="text-sm text-white/80 mb-4">La meilleure expérience de lecture</p>
+                                        <div class="space-y-4">
+                                            <div class="bg-white/5 p-3 rounded">
+                                                <h4 class="font-bold mb-2">Comment ça marche ?</h4>
+                                                <ol class="text-sm space-y-2 text-white/70">
+                                                    <li>1. Créez votre compte personnel après l'achat</li>
+                                                    <li>2. Accédez au livre depuis n'importe quel appareil</li>
+                                                    <li>3. Votre progression est automatiquement sauvegardée</li>
+                                                </ol>
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-4">
+                                                <div class="bg-white/5 p-3 rounded">
+                                                    <h4 class="font-bold mb-2">Avantages</h4>
+                                                    <ul class="text-sm space-y-1 text-white/70">
+                                                        <li>• Aucune installation requise</li>
+                                                        <li>• Mise en page adaptative</li>
+                                                        <li>• Mode sombre automatique</li>
+                                                        <li>• Mises à jour gratuites</li>
+                                                    </ul>
+                                                </div>
+                                                <div class="bg-white/5 p-3 rounded">
+                                                    <h4 class="font-bold mb-2">Fonctionnalités</h4>
+                                                    <ul class="text-sm space-y-1 text-white/70">
+                                                        <li>• Sauvegarde du progrès</li>
+                                                        <li>• Notes et surlignages</li>
+                                                        <li>• Mode hors-ligne</li>
+                                                        <li>• Support prioritaire</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="hidden md:block">
+                                        <span class="bg-gradient-to-r from-cyan-400 to-blue-400 text-[#001428] text-sm font-bold px-3 py-1 rounded-full">
+                                            RECOMMANDÉ
+                                        </span>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center pt-4 border-t border-white/20">
+                        <button type="button" onclick="document.getElementById('format-selection').close()" class="text-white/70 hover:text-white">
+                            Annuler
+                        </button>
+                        <button type="submit" class="bg-white text-[#001428] px-6 py-2 rounded-full font-bold hover:bg-gray-100 transition-all">
+                            Continuer
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </dialog>
+    </main>
 
     <!-- Footer -->
     <footer class="py-8 border-t border-white/10 bg-[#001428]/50">
@@ -156,6 +320,7 @@
                     <ul class="space-y-2">
                         <li><a href="mentions-legales.html" class="hover:text-cyan-400 transition-colors">Mentions légales</a></li>
                         <li><a href="politique-confidentialite.html" class="hover:text-cyan-400 transition-colors">Politique de confidentialité</a></li>
+                        <li><a href="cgv.html" class="hover:text-cyan-400 transition-colors">CGV</a></li>
                     </ul>
                 </div>
                 <div>
@@ -172,14 +337,6 @@
     </footer>
 
     <script>
-        // Fonction de défilement fluide
-        function scrollToSection(sectionId) {
-            document.getElementById(sectionId).scrollIntoView({ 
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
-
         // Ajout du code pour le titre scintillant
         const title = "ESCLAVE DIGITAL";
         const mainTitle = document.getElementById('mainTitle');
@@ -230,28 +387,6 @@
         mainTitle.addEventListener('touchmove', handleTouch);
         mainTitle.addEventListener('touchend', () => {
             letters.forEach(letter => letter.classList.remove('active'));
-        });
-
-        // Gestion de la modal
-        const accessBookButton = document.getElementById('access-book');
-        const platformSelection = document.getElementById('platform-selection');
-
-        accessBookButton.addEventListener('click', () => {
-            platformSelection.showModal();
-        });
-
-        // Gestion de la fermeture de la modale avec Echap
-        platformSelection.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                platformSelection.close();
-            }
-        });
-
-        // Gestion du clic en dehors de la modale
-        platformSelection.addEventListener('click', (e) => {
-            if (e.target === platformSelection) {
-                platformSelection.close();
-            }
         });
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -512,6 +647,50 @@
             });
 
             animate();
+        });
+
+        // Gestion de la sélection du format et du paiement
+        const formatForm = document.getElementById('format-form');
+        const formatDialog = document.getElementById('format-selection');
+
+        // Gestion de la fermeture de la modale avec Echap
+        formatDialog.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                formatDialog.close();
+            }
+        });
+
+        // Gestion du clic en dehors de la modale
+        formatDialog.addEventListener('click', (e) => {
+            if (e.target === formatDialog) {
+                formatDialog.close();
+            }
+        });
+
+        formatForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const selectedFormat = document.querySelector('input[name="format"]:checked');
+            
+            if (!selectedFormat) {
+                alert('Veuillez sélectionner un format de lecture');
+                return;
+            }
+
+            // Rediriger directement vers la page d'informations avec le format sélectionné
+            window.location.href = `information.html?format=${selectedFormat.value}`;
+        });
+
+        // Style pour les radios sélectionnés
+        document.querySelectorAll('input[name="format"]').forEach(radio => {
+            radio.parentElement.addEventListener('click', function() {
+                radio.checked = true;
+                // Retirer la mise en évidence de tous les conteneurs
+                document.querySelectorAll('input[name="format"]').forEach(r => {
+                    r.parentElement.classList.remove('ring-2', 'ring-cyan-400');
+                });
+                // Ajouter la mise en évidence au conteneur sélectionné
+                this.classList.add('ring-2', 'ring-cyan-400');
+            });
         });
     </script>
 </body>
