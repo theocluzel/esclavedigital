@@ -3,14 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Informations - ESCLAVE DIGITAL</title>
-    <script src="https://js.stripe.com/v3/"></script>
+    <title>Vos informations - ESCLAVE DIGITAL</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="min-h-screen flex flex-col bg-[#001428] text-white">
+<body class="bg-[#001428] text-white min-h-screen">
     <header class="py-4 border-b border-white/10">
-        <nav class="container mx-auto px-4">
-            <a href="/" class="text-xl font-bold">ESCLAVE DIGITAL</a>
+        <nav class="container mx-auto px-4 flex justify-between items-center">
+            <div class="text-xl font-bold">
+                <a href="/" class="text-white hover:text-cyan-400 transition-colors">ESCLAVE DIGITAL</a>
+            </div>
+            <div class="flex items-center space-x-6">
+                <a href="/" class="hover:text-cyan-400 transition-colors">Accueil</a>
+                <a href="/about.html" class="hover:text-cyan-400 transition-colors">À propos</a>
+                <a href="mailto:contact@esclavedigital.fr" class="hover:text-cyan-400 transition-colors">Contact</a>
+                <a href="/login.html" class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full transition-all">Se connecter</a>
+            </div>
         </nav>
     </header>
 
@@ -27,51 +34,34 @@
                     <span class="mt-2 text-sm">Informations</span>
                 </div>
                 <div class="flex flex-col items-center">
-                    <div class="w-8 h-8 rounded-full bg-white/20 text-white flex items-center justify-center font-bold">3</div>
+                    <div class="w-8 h-8 rounded-full bg-white/10 text-white flex items-center justify-center font-bold">3</div>
                     <span class="mt-2 text-sm">Paiement</span>
                 </div>
             </div>
 
-            <!-- Formulaire -->
             <div class="bg-white/5 p-8 rounded-xl">
                 <h1 class="text-2xl font-bold mb-8">Vos informations</h1>
 
-                <!-- Résumé de la commande -->
-                <div class="mb-8 p-4 rounded-lg border border-white/10">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <h2 class="font-bold">ESCLAVE DIGITAL</h2>
-                            <p class="text-sm text-white/70">Format : <span id="selectedFormat">...</span></p>
-                        </div>
-                        <div class="text-right">
-                            <p class="font-bold">4,99€</p>
-                            <p class="text-sm text-white/70">TTC</p>
-                        </div>
-                    </div>
-                </div>
-
                 <form id="information-form" class="space-y-6">
                     <div>
-                        <label for="email" class="block mb-2">Email</label>
-                        <input type="email" id="email" required 
-                            class="w-full px-4 py-2 rounded bg-white/10 border border-white/20 focus:border-cyan-400 focus:outline-none text-white"
-                            placeholder="votre@email.com">
-                    </div>
-                    <div>
                         <label for="firstname" class="block mb-2">Prénom</label>
-                        <input type="text" id="firstname" required 
-                            class="w-full px-4 py-2 rounded bg-white/10 border border-white/20 focus:border-cyan-400 focus:outline-none text-white"
-                            placeholder="Votre prénom">
+                        <input type="text" id="firstname" name="firstname" required
+                            class="w-full px-4 py-2 rounded bg-white/10 border border-white/20 focus:border-cyan-400 focus:outline-none text-white">
                     </div>
                     <div>
                         <label for="lastname" class="block mb-2">Nom</label>
-                        <input type="text" id="lastname" required 
-                            class="w-full px-4 py-2 rounded bg-white/10 border border-white/20 focus:border-cyan-400 focus:outline-none text-white"
-                            placeholder="Votre nom">
+                        <input type="text" id="lastname" name="lastname" required
+                            class="w-full px-4 py-2 rounded bg-white/10 border border-white/20 focus:border-cyan-400 focus:outline-none text-white">
+                    </div>
+                    <div>
+                        <label for="email" class="block mb-2">Email</label>
+                        <input type="email" id="email" name="email" required
+                            class="w-full px-4 py-2 rounded bg-white/10 border border-white/20 focus:border-cyan-400 focus:outline-none text-white">
+                        <p class="mt-2 text-sm text-white/70">Nous vous enverrons le lien de téléchargement à cette adresse.</p>
                     </div>
 
                     <button type="submit" 
-                        class="w-full mt-8 bg-gradient-to-r from-cyan-400 to-blue-400 text-white font-bold py-3 px-8 rounded-full hover:opacity-90 transition-all">
+                        class="w-full bg-gradient-to-r from-cyan-400 to-blue-400 text-white font-bold py-3 px-8 rounded-full hover:opacity-90 transition-all">
                         Continuer vers le paiement
                     </button>
                 </form>
@@ -86,24 +76,16 @@
     </footer>
 
     <script>
-        // Récupérer le format depuis l'URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const format = urlParams.get('format');
-        document.getElementById('selectedFormat').textContent = format === 'web' ? 'Version Web Premium' : 
-                                                              format === 'ios' ? 'iOS / Apple Books' : 
-                                                              format === 'android' ? 'Android' : '';
-
-        // Gérer la soumission du formulaire
-        const form = document.getElementById('information-form');
-        form.addEventListener('submit', function(event) {
-            event.preventDefault();
+        document.getElementById('information-form').addEventListener('submit', function(e) {
+            e.preventDefault();
             
-            const email = document.getElementById('email').value;
             const firstname = document.getElementById('firstname').value;
             const lastname = document.getElementById('lastname').value;
+            const email = document.getElementById('email').value;
+            const format = new URLSearchParams(window.location.search).get('format');
 
             // Rediriger vers la page de paiement avec toutes les informations
-            window.location.href = `/payment.html?format=${format}&email=${encodeURIComponent(email)}&firstname=${encodeURIComponent(firstname)}&lastname=${encodeURIComponent(lastname)}`;
+            window.location.href = `/payment.html?format=${format}&firstname=${encodeURIComponent(firstname)}&lastname=${encodeURIComponent(lastname)}&email=${encodeURIComponent(email)}`;
         });
     </script>
 </body>

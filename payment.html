@@ -4,13 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Paiement - ESCLAVE DIGITAL</title>
-    <script src="https://js.stripe.com/v3/"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="min-h-screen flex flex-col bg-[#001428] text-white">
     <header class="py-4 border-b border-white/10">
-        <nav class="container mx-auto px-4">
-            <a href="/" class="text-xl font-bold">ESCLAVE DIGITAL</a>
+        <nav class="container mx-auto px-4 flex justify-between items-center">
+            <div class="text-xl font-bold">
+                <a href="/" class="text-white hover:text-cyan-400 transition-colors">ESCLAVE DIGITAL</a>
+            </div>
+            <div class="flex items-center space-x-6">
+                <a href="/" class="hover:text-cyan-400 transition-colors">Accueil</a>
+                <a href="/about.html" class="hover:text-cyan-400 transition-colors">À propos</a>
+                <a href="mailto:contact@esclavedigital.fr" class="hover:text-cyan-400 transition-colors">Contact</a>
+                <a href="/login.html" class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full transition-all">Se connecter</a>
+            </div>
         </nav>
     </header>
 
@@ -42,8 +49,6 @@
                         <div>
                             <h2 class="font-bold">ESCLAVE DIGITAL</h2>
                             <p class="text-sm text-white/70">Format : <span id="selectedFormat">...</span></p>
-                            <p class="text-sm text-white/70 mt-1">Email : <span id="userEmail">...</span></p>
-                            <p class="text-sm text-white/70">Nom : <span id="userName">...</span></p>
                         </div>
                         <div class="text-right">
                             <p class="font-bold">4,99€</p>
@@ -52,42 +57,12 @@
                     </div>
                 </div>
 
-                <form id="payment-form" class="space-y-6">
-                    <div>
-                        <label for="card-element" class="block mb-2">Carte bancaire</label>
-                        <div id="card-element" class="p-4 rounded bg-white"></div>
-                        <div id="card-errors" class="mt-2 text-sm text-red-400" role="alert"></div>
-                    </div>
-
-                    <button type="submit" class="w-full bg-gradient-to-r from-cyan-400 to-blue-400 text-white font-bold py-3 px-8 rounded-full hover:opacity-90 transition-all flex items-center justify-center">
-                        <span id="button-text">Payer 4,99€</span>
-                        <div id="spinner" class="hidden">
-                            <div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin ml-3"></div>
-                        </div>
+                <form id="payment-form" action="/create-checkout-session" method="POST">
+                    <input type="hidden" name="format" id="format-input">
+                    <button type="submit" 
+                        class="w-full bg-gradient-to-r from-cyan-400 to-blue-400 text-white font-bold py-3 px-8 rounded-full hover:opacity-90 transition-all">
+                        Procéder au paiement
                     </button>
-
-                    <!-- Ajout des informations de test -->
-                    <div class="mt-4 p-4 rounded-lg border border-white/10">
-                        <p class="text-sm font-bold mb-2">🔧 Mode Test - Cartes de paiement</p>
-                        <div class="space-y-2 text-sm text-white/70">
-                            <p>Pour tester un paiement réussi :</p>
-                            <p class="font-mono bg-white/5 p-2 rounded">4242 4242 4242 4242</p>
-                            <p>Pour tester un paiement refusé :</p>
-                            <p class="font-mono bg-white/5 p-2 rounded">4000 0000 0000 0002</p>
-                            <p class="mt-2">
-                                Date d'expiration : n'importe quelle date future (ex: 12/25)<br>
-                                CVC : n'importe quels 3 chiffres (ex: 123)<br>
-                                Code postal : n'importe quel code postal valide (ex: 75001)
-                            </p>
-                            <p class="mt-2 text-xs">Note : Le code postal est demandé uniquement pour la vérification anti-fraude</p>
-                        </div>
-                    </div>
-
-                    <p class="text-center text-sm text-white/60">
-                        Paiement sécurisé par Stripe
-                        <img src="https://cdn.jsdelivr.net/gh/stripe/stripe-images@master/powered_by_stripe.svg" 
-                            alt="Powered by Stripe" class="h-6 mx-auto mt-2">
-                    </p>
                 </form>
             </div>
         </div>
@@ -100,105 +75,28 @@
     </footer>
 
     <script>
-        // Récupérer les informations depuis l'URL
+        // Récupérer le format depuis l'URL
         const urlParams = new URLSearchParams(window.location.search);
         const format = urlParams.get('format');
-        const email = urlParams.get('email');
-        const firstname = urlParams.get('firstname');
-        const lastname = urlParams.get('lastname');
-
-        // Afficher les informations
-        document.getElementById('selectedFormat').textContent = format === 'web' ? 'Version Web Premium' : 
-                                                              format === 'ios' ? 'iOS / Apple Books' : 
-                                                              format === 'android' ? 'Android' : '';
-        document.getElementById('userEmail').textContent = email;
-        document.getElementById('userName').textContent = `${firstname} ${lastname}`;
-
-        // Initialiser Stripe
-        const stripe = Stripe('pk_test_51OvCwbJN3rZkEYPm5DG4G9hEe2eE7H8e4Ks3wPHBXm2mHKLKxKHHYYqGvz4MlQPmBgHoXJo8yPYVZyqEQOYXJHkp00oBPYLfAE');
-        const elements = stripe.elements();
-        const card = elements.create('card', {
-            style: {
-                base: {
-                    color: '#32325d',
-                    fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-                    fontSmoothing: 'antialiased',
-                    fontSize: '16px',
-                    '::placeholder': {
-                        color: '#aab7c4'
-                    }
-                },
-                invalid: {
-                    color: '#fa755a',
-                    iconColor: '#fa755a'
-                }
+        
+        // Mettre à jour le champ caché
+        document.getElementById('format-input').value = format;
+        
+        // Afficher le bon format
+        if (format) {
+            const formatDisplay = document.getElementById('selectedFormat');
+            switch (format) {
+                case 'web':
+                    formatDisplay.textContent = 'Version Web Premium';
+                    break;
+                case 'ios':
+                    formatDisplay.textContent = 'iOS / Apple Books';
+                    break;
+                case 'android':
+                    formatDisplay.textContent = 'Android';
+                    break;
             }
-        });
-        card.mount('#card-element');
-
-        // Gérer les erreurs de saisie
-        card.addEventListener('change', function(event) {
-            const displayError = document.getElementById('card-errors');
-            if (event.error) {
-                displayError.textContent = event.error.message;
-            } else {
-                displayError.textContent = '';
-            }
-        });
-
-        // Gérer la soumission du formulaire
-        const form = document.getElementById('payment-form');
-        form.addEventListener('submit', async function(event) {
-            event.preventDefault();
-
-            const submitButton = form.querySelector('button[type="submit"]');
-            const spinner = document.getElementById('spinner');
-            const buttonText = document.getElementById('button-text');
-
-            // Désactiver le bouton et afficher le spinner
-            submitButton.disabled = true;
-            spinner.classList.remove('hidden');
-            buttonText.textContent = 'Traitement en cours...';
-
-            try {
-                // Créer la session de paiement
-                const response = await fetch('/create-checkout-session', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        format,
-                        email,
-                        firstname,
-                        lastname
-                    })
-                });
-
-                const data = await response.json();
-
-                if (data.error) {
-                    throw new Error(data.error);
-                }
-
-                // Rediriger vers la page de paiement Stripe
-                const result = await stripe.redirectToCheckout({
-                    sessionId: data.id
-                });
-
-                if (result.error) {
-                    throw new Error(result.error.message);
-                }
-            } catch (error) {
-                const errorElement = document.getElementById('card-errors');
-                errorElement.textContent = error.message;
-                
-                // Réactiver le bouton et cacher le spinner
-                submitButton.disabled = false;
-                spinner.classList.add('hidden');
-                buttonText.textContent = 'Payer 4,99€';
-            }
-        });
+        }
     </script>
 </body>
 </html> 

@@ -1,185 +1,387 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lecture - ESCLAVE DIGITAL</title>
+    <title>ESCLAVE DIGITAL</title>
+    <meta charset="utf-8">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .chapter-content {
-            font-size: 1.125rem;
-            line-height: 1.75;
-        }
-        
-        .chapter-content p {
-            margin-bottom: 1.5rem;
+        body {
+            background-color: #001428;
+            margin: 0;
+            min-height: 100vh;
         }
 
-        .chapter-content h2 {
-            font-size: 1.875rem;
-            font-weight: bold;
-            margin: 2rem 0 1rem;
+        .book-cover-container {
+            position: relative;
+            cursor: pointer;
         }
 
-        .chapter-content h3 {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin: 1.5rem 0 1rem;
+        .book-cover {
+            max-width: 400px;
+            border-radius: 8px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
         }
 
-        /* Style pour la barre de progression */
-        .progress-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
+        #open-book {
+            position: absolute;
+            top: 75%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 10px 25px;
+            font-size: 14px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        #open-book:hover {
+            background: rgba(0, 0, 0, 0.85);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+
+        #book-container {
+            display: none;
+            width: 90%;
+            max-width: 1400px;
+            height: 80vh;
+            margin: 2rem auto;
+            position: relative;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .book {
             width: 100%;
-            height: 3px;
-            background: rgba(255, 255, 255, 0.1);
-            z-index: 1000;
+            height: 100%;
+            display: flex;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            border-radius: 8px;
         }
 
-        .progress {
+        .page {
+            flex: 1;
+            padding: 2.5rem;
+            background: white;
+            position: relative;
             height: 100%;
-            background: linear-gradient(to right, #22d3ee, #3b82f6);
-            width: 0%;
-            transition: width 0.2s ease;
+            overflow: hidden;
+        }
+
+        .page-content {
+            height: calc(100% - 3rem);
+            position: relative;
+            font-family: 'Georgia', serif;
+            line-height: 1.7;
+            font-size: 18px;
+            color: #333;
+            text-align: justify;
+            padding: 0 1.5rem;
+        }
+
+        .page.left {
+            border-right: 1px solid #ddd;
+        }
+
+        .page-number {
+            position: absolute;
+            bottom: 1.5rem;
+            font-family: 'Georgia', serif;
+            font-size: 16px;
+            color: #666;
+        }
+
+        .left .page-number {
+            right: 3rem;
+        }
+
+        .right .page-number {
+            left: 3rem;
+        }
+
+        .navigation-buttons {
+            position: absolute;
+            bottom: -4rem;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .nav-button {
+            padding: 8px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        .nav-button:hover {
+            background: rgba(0, 0, 0, 0.85);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        h1.chapter-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            font-family: 'Georgia', serif;
+            color: #222;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        h1.chapter-title:hover {
+            color: #666;
+        }
+
+        .table-of-contents {
+            padding: 2rem;
+            font-family: 'Georgia', serif;
+            color: #333;
+        }
+
+        .chapter-link {
+            display: block;
+            margin: 1rem 0;
+            color: #333;
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .chapter-link:hover {
+            color: #666;
+        }
+
+        .chapter-link em {
+            font-style: italic;
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col bg-[#001428] text-white">
-    <!-- Barre de progression -->
-    <div class="progress-bar">
-        <div class="progress" id="readingProgress"></div>
-    </div>
-
-    <header class="py-4 border-b border-white/10 bg-[#001428]/95 backdrop-blur-sm sticky top-0 z-50">
+    <!-- Header -->
+    <header class="py-4 border-b border-white/10">
         <nav class="container mx-auto px-4 flex justify-between items-center">
-            <a href="/" class="text-xl font-bold">ESCLAVE DIGITAL</a>
+            <div class="text-xl font-bold">
+                <a href="/" class="text-white hover:text-cyan-400 transition-colors">ESCLAVE DIGITAL</a>
+            </div>
             <div class="flex items-center space-x-6">
-                <button id="toggleSidebar" class="hover:text-cyan-400 transition-colors">
-                    Chapitres
-                </button>
-                <button id="logout" class="hover:text-cyan-400 transition-colors">
-                    Déconnexion
-                </button>
+                <a href="/" class="hover:text-cyan-400 transition-colors">Accueil</a>
+                <a href="/about.html" class="hover:text-cyan-400 transition-colors">À propos</a>
+                <a href="mailto:contact@esclavedigital.fr" class="hover:text-cyan-400 transition-colors">Contact</a>
             </div>
         </nav>
     </header>
 
-    <div class="flex-grow flex">
-        <!-- Sidebar pour la navigation entre chapitres -->
-        <aside id="sidebar" class="w-64 border-r border-white/10 bg-[#001428]/95 backdrop-blur-sm fixed top-0 bottom-0 left-0 transform -translate-x-full transition-transform duration-200 ease-in-out pt-20 overflow-y-auto">
-            <div class="p-4">
-                <h2 class="text-lg font-bold mb-4">Table des matières</h2>
-                <ul class="space-y-2" id="chaptersMenu">
-                    <!-- La liste des chapitres sera ajoutée ici par JavaScript -->
-                </ul>
+    <div class="flex-1 flex items-center justify-center p-4">
+        <div class="book-cover-container">
+            <img src="images/cover.jpg" alt="Couverture du livre Esclave Digital" class="book-cover" id="book-cover">
+            <button id="open-book">Ouvrir le livre</button>
+        </div>
+        <div id="book-container">
+            <div class="book">
+                <div class="page left">
+                    <div class="page-content">
+                        <!-- Le contenu sera injecté ici par JavaScript -->
+                    </div>
+                    <div class="page-number"></div>
+                </div>
+                <div class="page right">
+                    <div class="page-content">
+                        <!-- Le contenu sera injecté ici par JavaScript -->
+                    </div>
+                    <div class="page-number"></div>
+                </div>
             </div>
-        </aside>
-
-        <!-- Contenu principal -->
-        <main class="flex-grow container mx-auto px-4 py-16 max-w-3xl">
-            <div id="bookContent" class="chapter-content">
-                <!-- Le contenu du chapitre sera chargé ici -->
+            <div class="navigation-buttons">
+                <button class="nav-button" id="prev-page">Page précédente</button>
+                <button class="nav-button" id="next-page">Page suivante</button>
             </div>
-
-            <!-- Navigation entre chapitres -->
-            <div class="mt-16 flex justify-between items-center border-t border-white/10 pt-8">
-                <button id="prevChapter" class="px-6 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors">
-                    Chapitre précédent
-                </button>
-                <button id="nextChapter" class="px-6 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors">
-                    Chapitre suivant
-                </button>
-            </div>
-        </main>
+        </div>
     </div>
 
     <script>
-        // Vérification de l'authentification
-        async function checkAuth() {
-            try {
-                const response = await fetch('/api/check-auth');
-                if (!response.ok) {
-                    window.location.href = 'login.html';
+        // Contenu du livre divisé en chapitres
+        const bookContent = {
+            chapters: [
+                {
+                    title: 'Introduction',
+                    pages: [
+                        `"À l'ère de la technologie omniprésente, êtes-vous maître de votre temps ou esclave de vos écrans ?"
+
+Bonjour, je suis Théo Cluzel, j'ai 17 ans et je prépare actuellement ma dernière année de lycée. Ce livre est né de mon inquiétude profonde pour l'avenir des jeunes dans notre société de plus en plus connectée et numérisée. En tant que membre de cette génération immergée dans le numérique, j'ai pu observer de près l'impact des smartphones, des réseaux sociaux et des technologies modernes sur notre quotidien.`,
+
+                        `Un trajet en métro, en RER ou à bord d'un TGV suffit pour se rendre compte de l'ampleur du phénomène. Pour un ou deux passagers les yeux rivés dans les pages d'un roman ou d'un journal, dix autres de tous âges paraissent omnibulés dans par leur smartphone, le pouce qui s'agite frénétiquement de bas en haut ou de gauche à droite de l'écran. Ils "scrollent", font défiler, plus ou moins rapidement, des vidéos de format court, les nouvelles coqueluches des réseaux sociaux pour nous garder virtuellement dans leurs filets.
+
+Nous, les jeunes, sommes les parents de demain. Nos enfants grandiront dans un monde encore plus digitalisé, et cette spirale pourrait mener à des générations ayant des capacités cognitives inférieures à celles des générations précédentes. C'est cette perspective alarmante qui m'a poussé à écrire ce livre.`,
+
+                        `L'objectif de ce livre est double : informer et prévenir.
+
+À travers une exploration approfondie, analysons les dangers psychologiques et physiques liés à l'utilisation excessive des écrans et des smartphones. Nous aborderons en détail leur impact sur la santé, le bien-être et nos capacités cognitives. Une attention particulière sera accordée aux réseaux sociaux, notamment TikTok, pour comprendre les mécanismes qui rendent nos cerveaux dépendants. Nous étudierons également les dangers potentiels des ondes électromagnétiques et de l'intelligence artificielle.`,
+
+                        `` // Page vide pour assurer que le sommaire commence sur une nouvelle double page
+                    ]
+                },
+                {
+                    title: 'Sommaire',
+                    pages: [
+                        `<div class="table-of-contents">
+                            <div class="chapter-link" data-chapter="1"><em>Chapitre 1: Les Écrans et Leurs Dangers sur la Santé Physique</em></div>
+                            <div class="chapter-link" data-chapter="2"><em>Chapitre 2: Leurs dangers sur le Bien-être</em></div>
+                            <div class="chapter-link" data-chapter="3"><em>Chapitre 3: Les Réseaux Sociaux et Leurs Dangers</em></div>
+                            <div class="chapter-link" data-chapter="4"><em>Chapitre 4: TikTok et ses Implications</em></div>
+                            <div class="chapter-link" data-chapter="5"><em>Chapitre 5: L'Essor des Américains et le Plan de TikTok</em></div>
+                            <div class="chapter-link" data-chapter="6"><em>Chapitre 6: Nos téléphones nous voient et nous écoutent</em></div>
+                            <div class="chapter-link" data-chapter="7"><em>Chapitre 7: Les ondes électromagnétiques</em></div>
+                            <div class="chapter-link" data-chapter="8"><em>Chapitre 8: Le Pouvoir des Couleurs dans les Applications</em></div>
+                            <div class="chapter-link" data-chapter="9"><em>Chapitre 9: L'Intelligence Artificielle et Ses Implications</em></div>
+                            <div class="chapter-link" data-chapter="10"><em>Chapitre 10: Le Retard Cognitif de Notre Génération</em></div>
+                        </div>`
+                    ]
+                },
+                {
+                    title: 'Les Écrans et Leurs Dangers sur la Santé Physique',
+                    pages: []
+                },
+                {
+                    title: 'Leurs dangers sur le Bien-être',
+                    pages: []
+                },
+                {
+                    title: 'Les Réseaux Sociaux et Leurs Dangers',
+                    pages: []
+                },
+                {
+                    title: 'TikTok et ses Implications',
+                    pages: []
+                },
+                {
+                    title: 'L\'Essor des Américains et le Plan de TikTok',
+                    pages: []
+                },
+                {
+                    title: 'Nos téléphones nous voient et nous écoutent',
+                    pages: []
+                },
+                {
+                    title: 'Les ondes électromagnétiques',
+                    pages: []
+                },
+                {
+                    title: 'Le Pouvoir des Couleurs dans les Applications',
+                    pages: []
+                },
+                {
+                    title: 'L\'Intelligence Artificielle et Ses Implications',
+                    pages: []
+                },
+                {
+                    title: 'Le Retard Cognitif de Notre Génération',
+                    pages: []
                 }
-            } catch (error) {
-                window.location.href = 'login.html';
-            }
+            ]
+        };
+
+        let currentChapter = 0;
+        let currentPage = 0;
+
+        function goToChapter(chapterIndex) {
+            currentChapter = chapterIndex + 2; // +2 pour tenir compte de l'intro et du sommaire
+            currentPage = 0;
+            updatePages();
         }
 
-        // Gestion de la déconnexion
-        document.getElementById('logout').addEventListener('click', async () => {
-            try {
-                await fetch('/api/logout', { method: 'POST' });
-                window.location.href = 'login.html';
-            } catch (error) {
-                console.error('Erreur lors de la déconnexion:', error);
-            }
+        // Ajouter les gestionnaires d'événements pour les liens du sommaire
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const chapterLinks = document.querySelectorAll('.chapter-link');
+                chapterLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        const chapterIndex = parseInt(link.dataset.chapter) - 1;
+                        goToChapter(chapterIndex);
+                    });
+                });
+            }, 100);
         });
 
-        // Gestion de la sidebar
-        const sidebar = document.getElementById('sidebar');
-        document.getElementById('toggleSidebar').addEventListener('click', () => {
-            sidebar.classList.toggle('-translate-x-full');
-        });
+        function updatePages() {
+            const leftPage = document.querySelector('.page.left .page-content');
+            const rightPage = document.querySelector('.page.right .page-content');
+            const leftPageNum = document.querySelector('.page.left .page-number');
+            const rightPageNum = document.querySelector('.page.right .page-number');
 
-        // Gestion de la barre de progression
-        function updateReadingProgress() {
-            const winScroll = document.documentElement.scrollTop;
-            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const scrolled = (winScroll / height) * 100;
-            document.getElementById('readingProgress').style.width = scrolled + '%';
-        }
+            const chapter = bookContent.chapters[currentChapter];
+            
+            // Page gauche
+            leftPage.innerHTML = currentPage === 0 ? 
+                `<h1 class="chapter-title" onclick="goToSummary()">${chapter.title}</h1>${chapter.pages[currentPage]}` :
+                chapter.pages[currentPage] || '';
+            leftPageNum.textContent = currentPage + 1;
 
-        window.addEventListener('scroll', updateReadingProgress);
+            // Page droite
+            rightPage.innerHTML = chapter.pages[currentPage + 1] || '';
+            rightPageNum.textContent = currentPage + 2;
 
-        // Charger le contenu initial
-        checkAuth();
-
-        // Exemple de structure des chapitres (à remplacer par les vrais chapitres)
-        const chapters = [
-            { id: 1, title: "Introduction" },
-            { id: 2, title: "L'emprise du numérique" },
-            { id: 3, title: "Les dangers cachés" },
-            // ... autres chapitres
-        ];
-
-        // Remplir le menu des chapitres
-        const chaptersMenu = document.getElementById('chaptersMenu');
-        chapters.forEach(chapter => {
-            const li = document.createElement('li');
-            li.innerHTML = `
-                <button class="w-full text-left px-4 py-2 rounded hover:bg-white/10 transition-colors">
-                    ${chapter.title}
-                </button>
-            `;
-            li.querySelector('button').addEventListener('click', () => loadChapter(chapter.id));
-            chaptersMenu.appendChild(li);
-        });
-
-        // Fonction pour charger un chapitre
-        async function loadChapter(chapterId) {
-            try {
-                const response = await fetch(`/api/chapters/${chapterId}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    document.getElementById('bookContent').innerHTML = data.content;
-                    sidebar.classList.add('-translate-x-full'); // Fermer la sidebar après sélection
-                    window.scrollTo(0, 0); // Remonter en haut de la page
+            // Ajouter le gestionnaire d'événements après avoir injecté le contenu
+            if (currentPage === 0) {
+                const chapterTitle = document.querySelector('.chapter-title');
+                if (chapterTitle) {
+                    chapterTitle.style.cursor = 'pointer';
                 }
-            } catch (error) {
-                console.error('Erreur lors du chargement du chapitre:', error);
             }
         }
 
-        // Navigation entre chapitres
-        document.getElementById('prevChapter').addEventListener('click', () => {
-            // Implémenter la navigation vers le chapitre précédent
+        function goToSummary() {
+            currentChapter = 1; // Le sommaire est le chapitre 1
+            currentPage = 0;
+            updatePages();
+        }
+
+        // Gestionnaires d'événements
+        document.getElementById('open-book').addEventListener('click', function() {
+            document.getElementById('book-container').style.display = 'block';
+            document.getElementById('book-cover').style.display = 'none';
+            this.style.display = 'none';
+            
+            setTimeout(() => {
+                document.getElementById('book-container').style.opacity = '1';
+                updatePages();
+            }, 50);
         });
 
-        document.getElementById('nextChapter').addEventListener('click', () => {
-            // Implémenter la navigation vers le chapitre suivant
+        document.getElementById('prev-page').addEventListener('click', () => {
+            if (currentPage > 0) {
+                currentPage -= 2;
+            } else if (currentChapter > 0) {
+                currentChapter--;
+                currentPage = Math.max(0, bookContent.chapters[currentChapter].pages.length - 2);
+            }
+            updatePages();
+        });
+
+        document.getElementById('next-page').addEventListener('click', () => {
+            const chapter = bookContent.chapters[currentChapter];
+            if (currentPage + 2 < chapter.pages.length) {
+                currentPage += 2;
+            } else if (currentChapter < bookContent.chapters.length - 1) {
+                currentChapter++;
+                currentPage = 0;
+            }
+            updatePages();
         });
     </script>
 </body>
