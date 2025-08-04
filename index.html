@@ -1,40 +1,518 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ESCLAVE DIGITAL</title>
+    <meta charset="utf-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        #book-container {
+            width: 100%;
+            height: 800px;
+            touch-action: none;
+            position: relative;
+        }
+        canvas {
+            touch-action: none;
+            display: block;
+            width: 100% !important;
+            height: 100% !important;
+        }
+        .glowing-title {
+            display: flex;
+            justify-content: center;
+            gap: 0;
+            letter-spacing: normal;
+            font-size: 4.5rem;
+        }
+        .glowing-letter {
+            transition: text-shadow 0.3s ease;
+            cursor: default;
+            margin: 0;
+            padding: 0;
+            letter-spacing: normal;
+        }
+        .glowing-letter.active {
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8),
+                          0 0 20px rgba(255, 255, 255, 0.8),
+                          0 0 30px rgba(255, 255, 255, 0.6);
+        }
+        dialog {
+            margin: auto;
+            padding: 0;
+            border: none;
+            background: transparent;
+        }
         dialog::backdrop {
             background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(4px);
         }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#001428] text-white">
+    <!-- Header -->
+    <header class="py-4 border-b border-white/10">
+        <nav class="container mx-auto px-4 flex justify-between items-center">
+            <div class="text-xl font-bold">
+                <a href="/" class="text-white hover:text-cyan-400 transition-colors">ESCLAVE DIGITAL</a>
+            </div>
+            <div class="flex items-center space-x-6">
+                <a href="/" class="hover:text-cyan-400 transition-colors">Accueil</a>
+                <a href="/about.html" class="hover:text-cyan-400 transition-colors">À propos</a>
+                <a href="mailto:contact@esclavedigital.fr" class="hover:text-cyan-400 transition-colors">Contact</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Contenu principal -->
+    <main class="flex-grow">
+        <div class="container mx-auto px-4 py-16">
+            <div class="max-w-4xl mx-auto text-center space-y-8">
+                <h1 class="text-6xl font-bold mb-8 text-white glowing-title" id="mainTitle">
+                    <!-- Le JavaScript remplira ce titre -->
+                </h1>
+
+                <!-- Container pour le livre 3D -->
+                <div id="book-container" class="mb-4"></div>
+
+                <!-- Bouton pour accéder au livre -->
+                <div class="text-center mt-8">
+                    <button id="access-book" class="bg-gradient-to-r from-cyan-400 to-blue-400 text-white font-bold py-4 px-8 rounded-full hover:opacity-90 transition-all text-lg">
+                        Accéder au livre
+                    </button>
+                </div>
+
+                <!-- Description du livre -->
+                <div class="space-y-6">
+                    <div class="text-center space-y-4">
+                        <h2 class="text-4xl font-bold">ESCLAVE DIGITAL</h2>
+                        <h3 class="text-2xl font-semibold text-white/90">VERS UN FUTUR SANS INTELLIGENCE ?</h3>
+                        <p class="text-xl italic text-white/80 mt-6">
+                            "À l'ère de la technologie omniprésente, êtes-vous maître de votre temps ou esclave de vos écrans ?"
+                        </p>
+                    </div>
+
+                    <div class="space-y-8 text-lg leading-relaxed">
+                        <p>
+                            À 17 ans, Théo Cluzel se dresse comme la voix de sa génération, une génération qui, malgré son immersion totale dans le digital, ne voit pas ses dangers. Ce jeune auteur ne se contente pas de raconter l'histoire des écrans et des réseaux sociaux ; il la vit, la respire. Son ambition est de partager leurs impacts avec le monde.
+                        </p>
+                        
+                        <p>
+                            Dans ce livre, Theo nous guide a travers les meandres d'un monde ou les notifications dictent nos emotions et ou les algorithmes nous connaissent mieux que nous-mêmes. Il met en lumière les pièges invisibles qui guettent les jeunes et les moins jeunes : addiction, perte de concentration, et déclin du bien-être mental et physique.
+                        </p>
+                        
+                        <p>
+                            Mais ce livre n'est pas qu'un avertissement, c'est aussi une lueur d'espoir. Théo propose des solutions concrètes pour reprendre le contrôle de nos vies numériques et restaurer notre santé mentale. Il nous invite à une prise de conscience collective, à agir maintenant pour un avenir où la technologie sert l'homme, et non l'inverse.
+                        </p>
+                        
+                        <blockquote class="border-l-4 border-white/20 pl-6 italic text-white/90">
+                            «J'espère que chaque lecteur trouvera des moyens concrets pour proteger son intelligence et son bien-être dans un monde de plus en plus digital. Ensemble, nous pouvons construire un avenir où la technologie est utilisée de manière responsable et bénéfique, sans sacrifier notre santé mentale et physique.»
+                        </blockquote>
+                        
+                        <p class="text-right font-semibold">
+                            THÉO CLUZEL
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de sélection de plateforme -->
+    <dialog id="platform-selection" class="bg-[#001428] text-white p-8 rounded-xl backdrop-blur-xl border border-white/20 w-full max-w-2xl mx-auto">
+        <div class="space-y-6">
+            <h2 class="text-2xl font-bold text-center">Sélectionnez le type de votre appareil pour accéder au livre</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Android -->
+                <button disabled
+                    class="bg-gradient-to-r from-gray-500 to-gray-600 text-white font-bold py-6 px-8 rounded-full opacity-50 cursor-not-allowed text-lg">
+                    Android
+                </button>
+
+                <!-- iOS -->
+                <button onclick="window.open('https://books.apple.com/fr/book/esclave-digitale/id6742460796', '_blank')" 
+                    class="bg-gradient-to-r from-cyan-400 to-blue-400 text-white font-bold py-6 px-8 rounded-full hover:opacity-90 transition-all text-lg">
+                    iOS
+                </button>
+            </div>
+
+            <div class="flex justify-center pt-4">
+                <button onclick="document.getElementById('platform-selection').close()" 
+                    class="text-white/70 hover:text-white px-6 py-2 rounded-full transition-all">
+                    Annuler
+                </button>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- Footer -->
+    <footer class="py-8 border-t border-white/10 bg-[#001428]/50">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Liens rapides</h3>
+                    <ul class="space-y-2">
+                        <li><a href="mentions-legales.html" class="hover:text-cyan-400 transition-colors">Mentions légales</a></li>
+                        <li><a href="politique-confidentialite.html" class="hover:text-cyan-400 transition-colors">Politique de confidentialité</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contact</h3>
+                    <a href="mailto:contact@esclavedigital.fr" class="text-cyan-400 hover:text-cyan-300 transition-colors">
+                        contact@esclavedigital.fr
+                    </a>
+                </div>
+            </div>
+            <div class="mt-8 pt-8 border-t border-white/10 text-center text-sm text-white/60">
+                © 2024 ESCLAVE DIGITAL. Tous droits réservés.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Fonction de défilement fluide
+        function scrollToSection(sectionId) {
+            document.getElementById(sectionId).scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+
+        // Ajout du code pour le titre scintillant
+        const title = "ESCLAVE DIGITAL";
+        const mainTitle = document.getElementById('mainTitle');
         
-        /* Optimisations mobile */
-        @media (max-width: 768px) {
-            /* Titre plus petit sur mobile */
-            .glowing-title {
-                font-size: 2.5rem !important;
+        // Créer les lettres individuelles avec un espace entre les mots
+        title.split('').forEach((letter, index) => {
+            const span = document.createElement('span');
+            span.textContent = letter;
+            span.className = 'glowing-letter';
+            // Ajouter un style spécial pour l'espace entre les mots
+            if (letter === ' ') {
+                span.style.marginLeft = '0.15em';
+                span.style.marginRight = '0.15em';
             }
+            mainTitle.appendChild(span);
+        });
+
+        // Gérer les événements de survol
+        const letters = document.querySelectorAll('.glowing-letter');
+        
+        function handleMouseMove(e) {
+            letters.forEach(letter => {
+                const rect = letter.getBoundingClientRect();
+                const distance = Math.hypot(
+                    e.clientX - (rect.left + rect.width/2),
+                    e.clientY - (rect.top + rect.height/2)
+                );
+                
+                // Activer l'effet si la souris est à moins de 50 pixels
+                if (distance < 50) {
+                    letter.classList.add('active');
+                } else {
+                    letter.classList.remove('active');
+                }
+            });
+        }
+
+        // Événements tactiles
+        function handleTouch(e) {
+            const touch = e.touches[0];
+            handleMouseMove(touch);
+        }
+
+        mainTitle.addEventListener('mousemove', handleMouseMove);
+        mainTitle.addEventListener('mouseleave', () => {
+            letters.forEach(letter => letter.classList.remove('active'));
+        });
+        mainTitle.addEventListener('touchmove', handleTouch);
+        mainTitle.addEventListener('touchend', () => {
+            letters.forEach(letter => letter.classList.remove('active'));
+        });
+
+        // Gestion de la modal
+        const accessBookButton = document.getElementById('access-book');
+        const platformSelection = document.getElementById('platform-selection');
+
+        accessBookButton.addEventListener('click', () => {
+            platformSelection.showModal();
+        });
+
+        // Gestion de la fermeture de la modale avec Echap
+        platformSelection.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                platformSelection.close();
+            }
+        });
+
+        // Gestion du clic en dehors de la modale
+        platformSelection.addEventListener('click', (e) => {
+            if (e.target === platformSelection) {
+                platformSelection.close();
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x001428);
+
+            const container = document.getElementById('book-container');
+            const camera = new THREE.PerspectiveCamera(75, container.offsetWidth / container.offsetHeight, 0.1, 1000);
             
-            /* Livre plus grand sur mobile */
-            #book-container {
-                height: 600px !important;
-            }
+            const renderer = new THREE.WebGLRenderer({ 
+                antialias: true,
+                powerPreference: "high-performance",
+                precision: "highp"
+            });
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+            container.appendChild(renderer.domElement);
+
+            // Éclairage amélioré
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+            directionalLight.position.set(5, 5, 5);
+            scene.add(directionalLight);
+
+            // Création des textures
+            const textureLoader = new THREE.TextureLoader();
             
-            /* Boutons plus grands sur mobile */
-            button {
-                padding: 12px 24px !important;
-                font-size: 16px !important;
+            function loadTexture(url) {
+                return new Promise((resolve, reject) => {
+                    textureLoader.load(
+                        url,
+                        (texture) => {
+                            console.log('Texture chargée avec succès:', url);
+                            resolve(texture);
+                        },
+                        undefined,
+                        (error) => {
+                            console.error('Erreur lors du chargement de la texture:', url, error);
+                            reject(error);
+                        }
+                    );
+                });
             }
-            
-            /* Espacement réduit sur mobile */
-            .space-y-8 > * + * {
-                margin-top: 1.5rem !important;
+
+            // Création d'une texture temporaire pour le dos
+            function createBackTexture() {
+                const canvas = document.createElement('canvas');
+                canvas.width = 2048;  // Augmentation significative de la résolution
+                canvas.height = 2048;
+                const ctx = canvas.getContext('2d');
+
+                // Activation de l'anticrénelage
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+
+                // Fond
+                ctx.fillStyle = '#001428';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Configuration du texte
+                ctx.fillStyle = 'white';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+
+                // Titre
+                ctx.font = 'bold 96px Arial';
+                ctx.fillText('ESCLAVE DIGITAL', canvas.width/2, 240);
+
+                // Sous-titre
+                ctx.font = 'bold 72px Arial';
+                ctx.fillText('VERS UN FUTUR', canvas.width/2, 360);
+                ctx.fillText('SANS INTELLIGENCE ?', canvas.width/2, 440);
+
+                // Texte principal
+                ctx.font = '64px Arial';
+                const text = [
+                    "À 17 ans, Théo Cluzel se dresse comme",
+                    "la voix de sa génération, une génération",
+                    "qui, malgré son immersion totale dans",
+                    "le digital, ne voit pas ses dangers.",
+                    "",
+                    "Ce jeune auteur ne se contente pas de",
+                    "raconter l'histoire des écrans et des",
+                    "réseaux sociaux ; il la vit, la respire.",
+                    "",
+                    "Dans ce livre, il nous guide à travers",
+                    "les méandres d'un monde où les",
+                    "notifications dictent nos émotions et",
+                    "où les algorithmes nous connaissent",
+                    "mieux que nous-mêmes."
+                ];
+
+                text.forEach((line, i) => {
+                    ctx.fillText(line, canvas.width/2, 640 + i * 80);
+                });
+
+                // Signature déplacée tout en bas
+                ctx.font = 'bold 72px Arial';
+                ctx.fillText('THEO CLUZEL', canvas.width/2, canvas.height - 100);
+
+                return new THREE.CanvasTexture(canvas);
             }
-            
-            /* Container plus compact sur mobile */
-            .container {
-                padding-left: 1rem !important;
-                padding-right: 1rem !important;
+
+            // Création d'une texture pour le côté avec le titre
+            function createSpineTexture() {
+                const canvas = document.createElement('canvas');
+                canvas.width = 128;   // Réduit la largeur pour un meilleur rendu
+                canvas.height = 2048;  // Garde la même hauteur
+                const ctx = canvas.getContext('2d');
+
+                // Activation de l'anticrénelage
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+
+                // Fond bleu foncé comme la couverture
+                ctx.fillStyle = '#001428';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Configuration du texte
+                ctx.fillStyle = 'white';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+
+                // Rotation pour écrire verticalement
+                ctx.save();
+                ctx.translate(canvas.width/2, canvas.height/2);
+                ctx.rotate(-Math.PI/2);
+
+                // Titre
+                ctx.font = 'bold 100px Arial';
+                ctx.fillText('ESCLAVE DIGITAL', 0, 0);
+
+                // Auteur
+                ctx.font = 'bold 70px Arial';
+                ctx.fillText('THEO CLUZEL', 0, -200);
+
+                ctx.restore();
+
+                return new THREE.CanvasTexture(canvas);
             }
-            
-            /* Modal plus adaptée sur mobile */
-            dialog {
-                margin: 1rem !important;
-                max-width: calc(100vw - 2rem) !important;
+
+            // Création du livre avec les textures
+            const bookGeometry = new THREE.BoxGeometry(5.5, 7.5, 0.4);
+
+            const materials = [
+                new THREE.MeshPhongMaterial({ 
+                    color: 0xFFFFFF,
+                    shininess: 30 
+                }), // Droite (pages)
+                new THREE.MeshPhongMaterial({ 
+                    map: createSpineTexture(),
+                    shininess: 30 
+                }), // Gauche (dos du livre)
+                new THREE.MeshPhongMaterial({ color: 0xFFFFFF, shininess: 30 }), // Haut
+                new THREE.MeshPhongMaterial({ color: 0xFFFFFF, shininess: 30 }), // Bas
+                new THREE.MeshPhongMaterial({ 
+                    map: null,
+                    shininess: 30,
+                    specular: new THREE.Color(0x444444)
+                }), // Avant
+                new THREE.MeshPhongMaterial({ 
+                    map: createBackTexture(),
+                    shininess: 30,
+                    specular: new THREE.Color(0x444444)
+                })  // Arrière
+            ];
+
+            const book = new THREE.Mesh(bookGeometry, materials);
+            scene.add(book);
+
+            camera.position.z = 9;
+
+            // Chargement de la texture de couverture
+            loadTexture('./images/cover.jpg').then(texture => {
+                materials[4].map = texture;
+                materials[4].needsUpdate = true;
+            }).catch(error => {
+                console.error("Erreur lors du chargement de la couverture:", error);
+            });
+
+            // Animation et contrôles
+            let isDragging = false;
+            let previousMousePosition = { x: 0, y: 0 };
+            let rotationSpeed = { x: 0, y: 0 };
+            let autoRotate = true;
+
+            container.addEventListener('mousedown', startRotating);
+            container.addEventListener('mousemove', rotate);
+            container.addEventListener('mouseup', stopRotating);
+            container.addEventListener('mouseleave', stopRotating);
+            container.addEventListener('touchstart', startRotating);
+            container.addEventListener('touchmove', rotate);
+            container.addEventListener('touchend', stopRotating);
+
+            function startRotating(e) {
+                isDragging = true;
+                autoRotate = false;
+                previousMousePosition = {
+                    x: e.type === 'mousedown' ? e.clientX : e.touches[0].clientX,
+                    y: e.type === 'mousedown' ? e.clientY : e.touches[0].clientY
+                };
+                rotationSpeed = { x: 0, y: 0 };
             }
-        } 
+
+            function rotate(e) {
+                if (!isDragging) return;
+                e.preventDefault();
+                
+                const currentPosition = {
+                    x: e.type === 'mousemove' ? e.clientX : e.touches[0].clientX,
+                    y: e.type === 'mousemove' ? e.clientY : e.touches[0].clientY
+                };
+
+                rotationSpeed = {
+                    x: (currentPosition.y - previousMousePosition.y) * 0.005,
+                    y: (currentPosition.x - previousMousePosition.x) * 0.005
+                };
+
+                book.rotation.x += rotationSpeed.x;
+                book.rotation.y += rotationSpeed.y;
+
+                previousMousePosition = {
+                    x: currentPosition.x,
+                    y: currentPosition.y
+                };
+            }
+
+            function stopRotating() {
+                isDragging = false;
+                rotationSpeed = { x: 0, y: 0 };
+                // Ne pas réactiver l'autoRotate
+            }
+
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                if (!isDragging) {
+                    if (autoRotate) {
+                        // Rotation initiale plus lente
+                        book.rotation.y += 0.003;
+                    }
+                } else {
+                    // Appliquer la rotation basée sur l'interaction utilisateur
+                    book.rotation.x += rotationSpeed.x;
+                    book.rotation.y += rotationSpeed.y;
+                }
+                
+                renderer.render(scene, camera);
+            }
+
+            // Gestion du redimensionnement
+            window.addEventListener('resize', () => {
+                camera.aspect = container.offsetWidth / container.offsetHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.offsetWidth, container.offsetHeight);
+            });
+
+            animate();
+        });
+    </script>
+</body>
+</html> 
