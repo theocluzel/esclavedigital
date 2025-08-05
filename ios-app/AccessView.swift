@@ -56,7 +56,7 @@ struct AccessView: View {
                         .disabled(email.isEmpty || isLoading)
                         
                         Button("Je n'ai pas encore acheté le livre") {
-                            if let url = URL(string: "https://esclavedigital.fr") {
+                            if let url = URL(string: "https://esclavedigital.org") {
                                 UIApplication.shared.open(url)
                             }
                         }

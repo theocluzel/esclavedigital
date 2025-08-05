@@ -20,7 +20,7 @@ const handleIOSPurchase = async (email, transactionId) => {
         await sendWelcomeEmail({
             to: email,
             accessToken,
-            downloadLink: `https://esclavedigital.fr/download/ios?token=${accessToken}`,
+            downloadLink: `https://esclavedigital.org/download/ios?token=${accessToken}`,
             instructions: {
                 step1: "Téléchargez l'application depuis l'App Store",
                 step2: "Ouvrez l'application",
