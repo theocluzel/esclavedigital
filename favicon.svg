@@ -1,0 +1,17 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#06b6d4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Fond arrondi -->
+  <rect width="32" height="32" rx="6" fill="url(#gradient)"/>
+  
+  <!-- Lettre E stylisée -->
+  <path d="M8 8h16v3h-13v4h12v3h-12v4h13v3H8z" fill="white" stroke="white" stroke-width="0.5"/>
+  
+  <!-- Effet de brillance -->
+  <rect x="4" y="4" width="8" height="8" rx="2" fill="rgba(255,255,255,0.2)"/>
+</svg> 
